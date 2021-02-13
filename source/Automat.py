@@ -49,7 +49,13 @@ class Automat:
             print(e, type(e))
 
     def update_stock(self, id, new_stock):
-        print("incomplete")
+        if new_stock < 0:
+            print("invalid stock amount try again!")
+            return
+        if id <= 0 or id > 5:
+            print("invalid id try again!")
+            return
+        self.products[id-1]['stockNumber'] = new_stock
 
     def get_money_info_from_user(self):
         print("incomplete")
@@ -75,7 +81,8 @@ class Automat:
     def update_cash_and_product_info(self):
         print("incomplete")
 
-#x = Automat()
-# x.fill_product_info_from_file()
-# for a in x.products:
-    # print(a)
+x = Automat()
+x.fill_product_info_from_file()
+x.update_stock(1,2)
+for a in x.products:
+    print(a)

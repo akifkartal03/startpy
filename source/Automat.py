@@ -58,3 +58,8 @@ class Automat:
 
     def update_cash_and_product_info(self):
         print("incomplete")
+
+#x = Automat()
+#x.fill_cash_info_from_file()
+#for name, quantity in x.cash_box.items(): print(name , ": " , quantity)
+

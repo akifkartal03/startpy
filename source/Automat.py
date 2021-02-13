@@ -18,7 +18,16 @@ class Automat:
         ]
 
     def fill_cash_info_from_file(self):
-        print("incomplete")
+        file_name = 'urunler.txt'
+        try:
+            with open(file_name) as f_obj:
+                lines = f_obj.readlines()
+            quantities = lines[0].split(",")  # get money info from file
+            self.cash_box['25Kurus'] = int(quantities[0])
+            self.cash_box['50Kurus'] = int(quantities[1])
+            self.cash_box['1TL'] = int(quantities[2])
+        except Exception as e:
+            print(e, type(e))
 
     def fill_product_info_from_file(self):
         print("incomplete")

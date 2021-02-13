@@ -1,9 +1,13 @@
+
+import random
+
 class Automat:
     cash_box = {}
     products = []
     total_money = 0.0
     user_money = 0.0
     user_request = {}
+    user_request_money = 0.0
     remainder = 0.0
 
     def __init__(self):
@@ -16,6 +20,18 @@ class Automat:
             {'id': 4, 'name': 'cikolata', 'stockNumber': 0, 'price': 1.75, 'type': 1},
             {'id': 5, 'name': 'biskuvi', 'stockNumber': 0, 'price': 2, 'type': 1}
         ]
+    def run_machine(self):
+        self.total_money = 0.0
+        self.user_money = 0.0
+        self.user_request = {}
+        self.remainder = 0.0
+        self.user_request_money = 0.0
+        self.__fill_cash_info_from_file()
+        self.__fill_product_info_from_file()
+
+        while True:
+            self.__get_money_info_from_user()
+            self.__get_product_request_from_user()
 
     def __fill_cash_info_from_file(self):
         file_name = 'urunler.txt'
@@ -125,18 +141,14 @@ class Automat:
                 else:
                     self.user_request['5'] = 1
             elif input == 6:
-                self.user_request = {}
+                self.__reset()
             else:
                 finish = True
-        total_user_req = 0.0
         for id, quan in self.user_request.items():
-            total_user_req = total_user_req + self.__get_price(int(id)) * quan
-        if self.user_money < total_user_req:
+            self.user_request_money = self.user_request_money + self.__get_price(int(id)) * quan
+        if self.user_money < self.user_request_money:
             print("your money is not enough to buy these!!")
             print("Take your money and try again!!")
-            return False
-        else:
-            return True
 
     def __show_menu2(self):
         print("\t *** Product Menu ****")
@@ -158,22 +170,33 @@ class Automat:
         return self.products[id-1]['stockNumber']
 
     def __reset(self):
-        print("incomplete")
-
+        self.run_machine()
     def __check_money_press(self):
-        print("incomplete")
-        return False
+        if random.randint(1,4) == 2:
+            return True
+        else:
+            return False
 
     def __get_remainder(self):
-        print("incomplete")
-        return 0.0
+        if self.user_money < self.user_request_money:
+            #don't update anything
+            return 0.0
+        elif self.user_money == self.user_request_money:
+            self.__update_cash_and_product_info()
+            return 0.0
+        else:
+            self.__update_cash_and_product_info()
+            return self.user_money - self.user_request_money
 
-    def __check_enough_money(self):
-        print("incomplete")
-        return False
+    def __check_enough_money(self,remainder):
+        if remainder > self.total_money:
+            return False
+        else:
+            return True
 
     def __update_cash_and_product_info(self):
         print("incomplete")
+
 
 ##x = Automat()
 # x.get_money_info_from_user()

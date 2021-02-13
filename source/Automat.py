@@ -30,7 +30,23 @@ class Automat:
             print(e, type(e))
 
     def fill_product_info_from_file(self):
-        print("incomplete")
+        # only stock number and price will be updated
+        file_name = 'urunler.txt'
+        try:
+            with open(file_name) as f_obj:
+                lines = f_obj.readlines()
+            for i in range(1, 6):
+                information = lines[i].split(",")
+                self.products[i-1]['stockNumber'] = information[2]
+                values = information[3].split()
+                self.products[i - 1]['price'] = values[0]
+                if values[1] == 'Kurus':
+                    self.products[i - 1]['type'] = 0
+                else:
+                    self.products[i - 1]['type'] = 1
+
+        except Exception as e:
+            print(e, type(e))
 
     def update_stock(self, id, new_stock):
         print("incomplete")
@@ -60,6 +76,6 @@ class Automat:
         print("incomplete")
 
 #x = Automat()
-#x.fill_cash_info_from_file()
-#for name, quantity in x.cash_box.items(): print(name , ": " , quantity)
-
+# x.fill_product_info_from_file()
+# for a in x.products:
+    # print(a)

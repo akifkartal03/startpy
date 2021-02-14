@@ -4,8 +4,8 @@ import random
 
 class Automat:
 
-    def __init__(self, cash_box=None, products=None, total_money = 0.0, user_money = 0.0,
-                 user_request=None, user_request_money = 0.0, remainder = 0.0):
+    def __init__(self, cash_box=None, products=None, total_money=0.0, user_money=0.0,
+                 user_request=None, user_request_money=0.0, remainder=0.0):
 
         self.cash_box = {'25Kurus': 0, '50Kurus': 0, '1TL': 0}
         self.products = [
@@ -18,6 +18,7 @@ class Automat:
         ]
         self.__fill_cash_info_from_file()
         self.__fill_product_info_from_file()
+
     def run_machine(self):
 
         n = int(input("Enter number of run time of machine:"))
@@ -268,7 +269,8 @@ class Automat:
                         abs25 = rem / 0.25
                         rem = rem - abs25 * 0.25
                         self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - abs25
-            print("Your remainder money was given to you as %.2f" % self.remainder)
+            print("Your remainder money was given to you as %.2f" %
+                  self.remainder)
         self.__update_product_info()
         self.__write_to_file()
 
@@ -305,4 +307,3 @@ class Automat:
         self.total_money = 0.0
         self.total_money = self.total_money + self.cash_box['25Kurus']*0.25 +\
             self.cash_box['50Kurus']*0.50 + self.cash_box['1TL']
-

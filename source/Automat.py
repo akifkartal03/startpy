@@ -1,6 +1,7 @@
 
 import random
 
+
 class Automat:
     cash_box = {}
     products = []
@@ -20,6 +21,7 @@ class Automat:
             {'id': 4, 'name': 'cikolata', 'stockNumber': 0, 'price': 1.75, 'type': 1},
             {'id': 5, 'name': 'biskuvi', 'stockNumber': 0, 'price': 2, 'type': 1}
         ]
+
     def run_machine(self):
         self.total_money = 0.0
         self.user_money = 0.0
@@ -145,7 +147,8 @@ class Automat:
             else:
                 finish = True
         for id, quan in self.user_request.items():
-            self.user_request_money = self.user_request_money + self.__get_price(int(id)) * quan
+            self.user_request_money = self.user_request_money + \
+                self.__get_price(int(id)) * quan
         if self.user_money < self.user_request_money:
             print("your money is not enough to buy these!!")
             print("Take your money and try again!!")
@@ -171,31 +174,103 @@ class Automat:
 
     def __reset(self):
         self.run_machine()
+
     def __check_money_press(self):
-        if random.randint(1,4) == 2:
+        if random.randint(1, 4) == 2:
             return True
         else:
             return False
 
     def __get_remainder(self):
         if self.user_money < self.user_request_money:
-            #don't update anything
+            # don't update anything
             return 0.0
         elif self.user_money == self.user_request_money:
-            self.__update_cash_and_product_info()
+            self.__update_cash_info()
             return 0.0
         else:
-            self.__update_cash_and_product_info()
+            self.__update_cash_info()
             return self.user_money - self.user_request_money
 
-    def __check_enough_money(self,remainder):
+    def __check_enough_money(self, remainder):
         if remainder > self.total_money:
             return False
         else:
             return True
 
-    def __update_cash_and_product_info(self):
-        print("incomplete")
+    def __update_cash_info(self):
+        rem = self.__get_remainder()
+        if rem != 0.0:
+            if rem >= 1 and self.cash_box['1TL'] > 0:
+                absolute = int(rem)
+                if absolute <= self.cash_box['1TL']:
+                    self.cash_box['1TL'] = self.cash_box['1TL'] - absolute
+                    rem = rem - absolute
+                    if rem > 0:
+                        if rem >= 0.50 and self.cash_box['50Kurus'] > 0:
+                            rem = rem - 0.50
+                            self.cash_box['50Kurus'] = self.cash_box['50Kurus'] - 1
+                            if rem > 0:
+                                if self.cash_box['25Kurus'] > 0:
+                                    rem = rem - 0.25
+                                    self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - 1
+                                else:
+                                    print("The cash box will give you more money to complete its operation")
+                                    if self.cash_box['50Kurus'] > 0:
+                                        rem = rem - 0.50
+                                        self.cash_box['50Kurus'] = self.cash_box['50Kurus'] - 1
+                                    else:
+                                        rem = rem - 1
+                                        self.cash_box['1TL'] = self.cash_box['1TL'] - 1
+
+                        elif rem >= 0.50:
+                            amount = rem /0.25
+                            self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - amount
+                            rem = 0.0
+                        else:
+                            self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - 1
+                            rem = 0.0
+                else:
+                    rem = rem - self.cash_box['1TL']
+                    self.cash_box['1TL'] = 0
+                    if rem > 0:
+                        abs50 = int(rem / 0.50)
+                        if abs50 <= self.cash_box['50Kurus']:
+                            self.cash_box['50Kurus'] = self.cash_box['50Kurus'] - abs50
+                            rem = rem - abs50*0.50
+                            if rem > 0:
+                                self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - 1
+                                rem = rem - 0.25
+                        else:
+                            rem = rem - self.cash_box['50Kurus']*0.50
+                            self.cash_box['50Kurus'] = 0
+                            if rem > 0:
+                                abs25 = rem / 0.25
+                                rem = rem - abs25 * 0.25
+                                self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - abs25
+            elif rem>0:
+                abs50 = int(rem / 0.50)
+                if abs50 <= self.cash_box['50Kurus']:
+                    self.cash_box['50Kurus'] = self.cash_box['50Kurus'] - abs50
+                    rem = rem - abs50 * 0.50
+                    if rem > 0:
+                        self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - 1
+                        rem = rem - 0.25
+                else:
+                    rem = rem - self.cash_box['50Kurus'] * 0.50
+                    self.cash_box['50Kurus'] = 0
+                    if rem > 0:
+                        abs25 = rem / 0.25
+                        rem = rem - abs25 * 0.25
+                        self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - abs25
+
+
+
+
+
+
+
+
 
 
 ##x = Automat()

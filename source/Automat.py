@@ -32,8 +32,22 @@ class Automat:
         self.__fill_product_info_from_file()
 
         while True:
+            self.user_money = 0.0
+            self.user_request = {}
+            self.remainder = 0.0
+            self.user_request_money = 0.0
             self.__get_money_info_from_user()
             self.__get_product_request_from_user()
+            if self.__check_money_press():
+                print("Money press to the machine your request was canceled!!")
+                continue
+            else:
+                if self.__check_enough_money():
+                    if self.user_money >= self.user_request_money:
+                        self.__update_info()
+                else:
+                    print("Machine don't have enough money operation was canceled!!")
+                    continue
 
     def __fill_cash_info_from_file(self):
         file_name = 'urunler.txt'
@@ -58,9 +72,9 @@ class Automat:
                 lines = f_obj.readlines()
             for i in range(1, 6):
                 information = lines[i].split(",")
-                self.products[i-1]['stockNumber'] = information[2]
+                self.products[i-1]['stockNumber'] = int(information[2])
                 values = information[3].split()
-                self.products[i - 1]['price'] = values[0]
+                self.products[i - 1]['price'] = float(values[0])
                 if values[1] == 'Kurus':
                     self.products[i - 1]['type'] = 0
                 else:
@@ -165,7 +179,7 @@ class Automat:
 
     def __get_price(self, id):
         if self.products[id-1]['type'] == 0:
-            return self.products[id-1]['price'] / 100
+            return (self.products[id-1]['price']) / 100.0
         else:
             return self.products[id - 1]['price']
 
@@ -184,22 +198,22 @@ class Automat:
     def __get_remainder(self):
         if self.user_money < self.user_request_money:
             # don't update anything
-            return 0.0
+            self.remainder = 0.0
         elif self.user_money == self.user_request_money:
-            self.__update_cash_info()
-            return 0.0
+            self.remainder = 0.0
         else:
-            self.__update_cash_info()
-            return self.user_money - self.user_request_money
+            self.remainder = self.user_money - self.user_request_money
 
-    def __check_enough_money(self, remainder):
-        if remainder > self.total_money:
+    def __check_enough_money(self):
+        self.__get_total_money()
+        self.__get_remainder()
+        if self.remainder > self.total_money:
             return False
         else:
             return True
 
-    def __update_cash_info(self):
-        rem = self.__get_remainder()
+    def __update_info(self):
+        rem = self.remainder
         if rem != 0.0:
             if rem >= 1 and self.cash_box['1TL'] > 0:
                 absolute = int(rem)
@@ -215,7 +229,8 @@ class Automat:
                                     rem = rem - 0.25
                                     self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - 1
                                 else:
-                                    print("The cash box will give you more money to complete its operation")
+                                    print(
+                                        "The cash box will give you more money to complete its operation")
                                     if self.cash_box['50Kurus'] > 0:
                                         rem = rem - 0.50
                                         self.cash_box['50Kurus'] = self.cash_box['50Kurus'] - 1
@@ -224,7 +239,7 @@ class Automat:
                                         self.cash_box['1TL'] = self.cash_box['1TL'] - 1
 
                         elif rem >= 0.50:
-                            amount = rem /0.25
+                            amount = rem / 0.25
                             self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - amount
                             rem = 0.0
                         else:
@@ -248,7 +263,7 @@ class Automat:
                                 abs25 = rem / 0.25
                                 rem = rem - abs25 * 0.25
                                 self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - abs25
-            elif rem>0:
+            elif rem > 0:
                 abs50 = int(rem / 0.50)
                 if abs50 <= self.cash_box['50Kurus']:
                     self.cash_box['50Kurus'] = self.cash_box['50Kurus'] - abs50
@@ -263,16 +278,46 @@ class Automat:
                         abs25 = rem / 0.25
                         rem = rem - abs25 * 0.25
                         self.cash_box['25Kurus'] = self.cash_box['25Kurus'] - abs25
+            print("Your remainder money was given to you as %.2f" % self.remainder)
+        self.__update_product_info()
+        self.__write_to_file()
+
+    def __update_product_info(self):
+        for id, quan in self.user_request.items():
+            real_id = int(id)
+            self.__update_stock(real_id, self.__get_stock(real_id) - quan)
+
+    def __write_to_file(self):
+        filename = 'urunler.txt'
+        with open(filename, 'w') as f:
+            f.write(str(self.cash_box['25Kurus']))
+            f.write(",")
+            f.write(str(self.cash_box['50Kurus']))
+            f.write(",")
+            f.write(str(self.cash_box['1TL']))
+            f.write("\n")
+            for i in range(0, 5):
+                f.write(str(self.products[i]['id']))
+                f.write(",")
+                f.write(str(self.products[i]['name']))
+                f.write(",")
+                f.write(str(self.products[i]['stockNumber']))
+                f.write(",")
+                f.write(str(self.products[i]['price']))
+                f.write(" ")
+                if self.products[i]['type'] == 0:
+                    f.write("Kurus")
+                else:
+                    f.write("TL")
+                f.write("\n")
+
+    def __get_total_money(self):
+        self.total_money = 0.0
+        self.total_money = self.total_money + self.cash_box['25Kurus']*0.25 +\
+            self.cash_box['50Kurus']*0.50 + self.cash_box['1TL']
 
 
+x = Automat()
+x.run_machine()
 
 
-
-
-
-
-
-
-##x = Automat()
-# x.get_money_info_from_user()
-# x.get_product_request_from_user()

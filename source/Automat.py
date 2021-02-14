@@ -3,15 +3,10 @@ import random
 
 
 class Automat:
-    cash_box = {}
-    products = []
-    total_money = 0.0
-    user_money = 0.0
-    user_request = {}
-    user_request_money = 0.0
-    remainder = 0.0
 
-    def __init__(self):
+    def __init__(self, cash_box=None, products=None, total_money = 0.0, user_money = 0.0,
+                 user_request=None, user_request_money = 0.0, remainder = 0.0):
+
         self.cash_box = {'25Kurus': 0, '50Kurus': 0, '1TL': 0}
         self.products = [
 
@@ -21,17 +16,12 @@ class Automat:
             {'id': 4, 'name': 'cikolata', 'stockNumber': 0, 'price': 1.75, 'type': 1},
             {'id': 5, 'name': 'biskuvi', 'stockNumber': 0, 'price': 2, 'type': 1}
         ]
-
-    def run_machine(self):
-        self.total_money = 0.0
-        self.user_money = 0.0
-        self.user_request = {}
-        self.remainder = 0.0
-        self.user_request_money = 0.0
         self.__fill_cash_info_from_file()
         self.__fill_product_info_from_file()
+    def run_machine(self):
 
-        while True:
+        n = int(input("Enter number of run time of machine:"))
+        for _ in range(n):
             self.user_money = 0.0
             self.user_request = {}
             self.remainder = 0.0
@@ -315,9 +305,4 @@ class Automat:
         self.total_money = 0.0
         self.total_money = self.total_money + self.cash_box['25Kurus']*0.25 +\
             self.cash_box['50Kurus']*0.50 + self.cash_box['1TL']
-
-
-x = Automat()
-x.run_machine()
-
 

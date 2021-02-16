@@ -1,6 +1,6 @@
-15,8,4
-1,su,20,50.0 Kurus
-2,cay,10,1.0 TL
-3,kahve,12,1.5 TL
-4,cikolata,47,1.75 TL
-5,biskuvi,94,2.0 TL
+18,18,4
+1,su,14,50.0 Kurus
+2,cay,5,1.0 TL
+3,kahve,10,1.5 TL
+4,cikolata,46,1.75 TL
+5,biskuvi,90,2.0 TL
